@@ -246,17 +246,18 @@ class Bomb():
 
     def update(self, frame_time):
         global SPEED
-        self.x -= (SPEED - self.speed) * frame_time
-        if self.x < -200: self.x = 1500
-        if self.x > 1500: self.x = -150
-        if boy.y < boy_max_height:
-            self.y = 215
-        else:
-            self.y = 215 - (boy.y - boy_max_height)
-        if collide(boy, bomb) and boy.acceleration < 0 and Boy.state == NORMALSTATE:
-            SPEED += 1000
-            if SPEED > 3000: SPEED = 3000
-            boy.acceleration = - 5 * boy.acceleration / 4
+        if is_game_over == 0:
+            self.x -= (SPEED - self.speed) * frame_time
+            if self.x < -200: self.x = 1500
+            if self.x > 1500: self.x = -150
+            if boy.y < boy_max_height:
+                self.y = 215
+            else:
+                self.y = 215 - (boy.y - boy_max_height)
+            if collide(boy, bomb) and boy.acceleration < 0 and Boy.state == NORMALSTATE:
+                SPEED += 1000
+                if SPEED > 3000: SPEED = 3000
+                boy.acceleration = - 5 * boy.acceleration / 4
 
 
     def draw(self):
@@ -316,16 +317,10 @@ def draw(frame_time):
     front_background.draw()
     for floor in floor_enemy:
         floor.draw()
-    for floor in floor_enemy:
-        floor.draw_bb()
     boy.draw()
-    boy.draw_bb()
-    ground.draw_bb()
     helicopter.draw()
-    helicopter.draw_bb()
     showspeed.draw()
     bomb.draw()
-    bomb.draw_bb()
     update_canvas()
 
 
@@ -337,7 +332,12 @@ def handle_events(frame_time):
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            boy.acceleration = -1500
+            if Boy.state == NORMALSTATE:
+                boy.acceleration = -1500
+            elif Boy.state == HELISTATE:
+                Helicopter.timer = 0.0
+                Boy.state = NORMALSTATE
+                boy.acceleration = -1500
 
 def collide(a, b):
     left_a, bottom_a, right_a, top_a = a.get_bb()
