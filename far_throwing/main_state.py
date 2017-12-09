@@ -14,6 +14,7 @@ floor_enemy = None
 ground = None
 helicopter = None
 showspeed = None
+bomb = None
 GRAVITIY = 2500
 SPEED = global_state.x_acceleration
 NORMALSTATE = 0
@@ -229,9 +230,46 @@ class Showspeed():
         self.image.clip_draw(self.ten * 93, 0, 83, 120, self.x, self.y)
         self.image.clip_draw(self.one * 93, 0, 83, 120, self.x + 93, self.y)
 
+
+class Bomb():
+    def __init__(self):
+        self.image = load_image('Resource/bomb.png')
+        self.x = 1500
+        self.y = 200
+        self.speed = random.randint(600, 800)
+
+    def get_bb(self):
+        return self.x - 25, self.y - 45, self.x + 25, self.y + 45
+
+    def draw_bb(self):
+
+        draw_rectangle(*self.get_bb())
+
+    def update(self, frame_time):
+        global SPEED
+        self.x -= (SPEED - self.speed) * frame_time
+        if self.x < -200: self.x = 1500
+        if self.x > 1500: self.x = -150
+        if boy.y < boy_max_height:
+            self.y = 215
+        else:
+            self.y = 215 - (boy.y - boy_max_height)
+        if collide(boy, bomb) and boy.acceleration < 0 and Boy.state == NORMALSTATE:
+            SPEED += 1000
+            if SPEED > 3000: SPEED = 3000
+            boy.acceleration = - 5 * boy.acceleration / 4
+
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 50, 90, self.x, self.y)
+
+
+
+
 def enter():
-    global boy, front_background, back_background, SPEED, sky, floor_enemy, ground, helicopter, showspeed,is_game_over
+    global boy, front_background, back_background, SPEED, sky, floor_enemy, ground, helicopter, showspeed,is_game_over, bomb
     boy = Boy()
+    bomb = Bomb()
     showspeed = Showspeed()
     back_background = Background()
     front_background = Background()
@@ -247,7 +285,8 @@ def enter():
 
 
 def exit():
-    global boy, front_background, back_background, ground_enemy,sky, floor_enemy, ground, helicopter, showspeed
+    global boy, front_background, back_background, ground_enemy,sky, floor_enemy, ground, helicopter, showspeed, bomb
+    del(bomb)
     del(boy)
     del(front_background)
     del(back_background)
@@ -268,6 +307,7 @@ def update(frame_time):
             floor.update(frame_time)
         helicopter.update(frame_time)
     showspeed.update(frame_time)
+    bomb.update(frame_time)
 
 
 def draw(frame_time):
@@ -285,6 +325,8 @@ def draw(frame_time):
     helicopter.draw()
     helicopter.draw_bb()
     showspeed.draw()
+    bomb.draw()
+    bomb.draw_bb()
     update_canvas()
 
 
