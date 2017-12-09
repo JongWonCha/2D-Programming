@@ -81,7 +81,6 @@ class Boy():
                 self.hero_image.clip_draw(int(self.frame) * 108, boy_xposition, 108, boy_xposition, boy_xposition, self.y)
             else:
                 self.hero_image.clip_draw(int(self.frame) * 108, boy_xposition, 108, boy_xposition, boy_xposition, boy_max_height)
-                self.heli_image.draw(500, 500)
         elif Boy.state == HELISTATE:
             if self.y < boy_max_height:
                 self.heli_image.draw(boy_xposition, self.y)
