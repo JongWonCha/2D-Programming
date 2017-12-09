@@ -69,7 +69,7 @@ class Boy():
         if collide(boy, helicopter) and Boy.state == NORMALSTATE:
             Boy.state = HELISTATE
             #GRAVITIY = 0
-            Helicopter.timer = 5.0
+            Helicopter.timer = 2.0
             self.acceleration = 0
 
         print(Boy.state)
