@@ -24,6 +24,7 @@ boy_xposition = 140
 floor_enemy_speed = 1
 is_game_over = 0
 
+
 class Boy():
     state = NORMALSTATE
 
@@ -33,6 +34,7 @@ class Boy():
         self.frame = 0.0
         self.hero_image = load_image('Resource/hero_animation.png')
         self.heli_image = load_image('Resource/helicopter.png')
+        self.over_image = load_image('Resource/game_over.png')
         self.acceleration = 0.0
 
     def update(self, frame_time):
@@ -54,6 +56,7 @@ class Boy():
                     if Boy.state == NORMALSTATE and self.acceleration < 0:
                         self.acceleration = -self.acceleration
                         floor_en.x = 1100
+                        SPEED = 5 * SPEED / 6
 
         elif Boy.state == HELISTATE:
             if collide(boy, ground):
@@ -85,6 +88,8 @@ class Boy():
             if self.y < boy_max_height:
                 self.heli_image.draw(boy_xposition, self.y)
             else: self.heli_image.draw(boy_xposition, boy_max_height)
+        if is_game_over:
+            self.over_image.draw(500, 400)
 
 
     def get_bb(self):
@@ -189,8 +194,8 @@ class Helicopter():
     def update(self,frame_time):
         self.x -= (SPEED - self.speed) * frame_time
         if self.x < -200:
-            self.x = 1800
-            self.y = random.randint(700, 1500)
+            self.x = 3000
+            self.y = random.randint(700, 2000)
             self.realy = self.y
             self.speed = random.randint(700, 1000)
         if boy.y < boy_max_height:
