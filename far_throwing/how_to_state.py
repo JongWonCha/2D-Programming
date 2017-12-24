@@ -3,11 +3,13 @@ import title_state
 from pico2d import *
 name = "StartState"
 image = None
+font = None
 
 
 def enter():
-    global image
+    global image, font
     image = load_image('Resource/how_to_play.png')
+    font = load_font('Font/ENCR10B.TTF', 50)
 
 def exit():
     global image
@@ -17,7 +19,7 @@ def update(frame_time):
     pass
 
 def draw(frame_time):
-    global image,totalmoney
+    global image,totalmoney, font
     clear_canvas()
     image.clip_draw(0, 0, 1600, 900, 500, 400, 1000, 800)
     update_canvas()

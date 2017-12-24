@@ -27,8 +27,12 @@ def draw(frame_time):
     font.draw(300, 700, 'you have $%d' % global_state.totalmoney, (0, 0, 0))
     font.draw(80, 400, 'highspeed : %d'%speed, (0, 0, 0))
     font.draw(80, 450, '$50', (0, 0, 0))
+    font.draw(80, 350, 'press 1 to buy', (0, 0, 0))
     font.draw(550, 400, 'rocket : %d' %global_state.rockets , (0, 0, 0))
     font.draw(550, 450, '$100', (0, 0, 0))
+    font.draw(550, 350, 'press 2 to buy', (0, 0, 0))
+    font.draw(200, 200, 'press esc to return', (0, 0, 0))
+
     update_canvas()
 
 
@@ -40,8 +44,8 @@ def handle_events(frame_time):
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_1:
-            if global_state.totalmoney > 50:
-                global_state.high_speed += 300
+            if global_state.totalmoney > 50 and global_state.high_speed < 3300:
+                global_state.high_speed += 33
                 global_state.totalmoney -= 50
         elif event.type == SDL_KEYDOWN and event.key == SDLK_2:
             if global_state.totalmoney > 100:

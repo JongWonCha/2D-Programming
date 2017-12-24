@@ -24,6 +24,7 @@ boy_xposition = 140
 floor_enemy_speed = 1
 is_game_over = 0
 localmoney = 0
+rocket = 0
 
 
 class Boy():
@@ -38,7 +39,7 @@ class Boy():
         self.over_image = load_image('Resource/game_over.png')
         self.acceleration = 0.0
         if Boy.font == None:
-            Boy.font = load_font('Font/ENCR10B.TTF', 80)
+            Boy.font = load_font('Font/ENCR10B.TTF', 50)
 
     def update(self, frame_time):
         global SPEED, floor_enemy_speed, is_game_over, NORMALSTATE, HELISTATE, GRAVITIY, localmoney
@@ -81,7 +82,7 @@ class Boy():
 
 
     def draw(self):
-        global localmoney
+        global localmoney, rocket
         if Boy.state == NORMALSTATE:
             if self.y < boy_max_height:
                 self.hero_image.clip_draw(int(self.frame) * 108, boy_xposition, 108, boy_xposition, boy_xposition, self.y)
@@ -93,7 +94,12 @@ class Boy():
             else: self.heli_image.draw(boy_xposition, boy_max_height)
         if is_game_over:
             self.over_image.draw(500, 400)
-        Boy.font.draw(300, 750, 'money : %d'%localmoney, (0, 0, 0))
+        Boy.font.draw(400, 780, 'money : $%d'%localmoney, (0, 0, 0))
+        Boy.font.draw(400, 740, 'rocket : %d' % rocket, (0, 0, 0))
+        Boy.font.draw(400, 700, 'distance : %dm' % (self.x / 10 * 0.3), (0, 0, 0))
+        Boy.font.draw(190, 740, 'm/s', (0, 0, 0))
+        if self.state == HELISTATE:
+            Boy.font.draw(300, 400, 'press space to Bungee', (random.randint(0, 254), random.randint(0, 254), random.randint(0, 254)))
 
 
 
@@ -276,7 +282,7 @@ class Bomb():
 
 
 def enter():
-    global boy, front_background, back_background, SPEED,localmoney, sky, floor_enemy, ground, helicopter, showspeed,is_game_over, bomb
+    global boy, front_background, back_background, SPEED,localmoney, sky, floor_enemy, ground, helicopter, showspeed,is_game_over, bomb, rocket
     boy = Boy()
     bomb = Bomb()
     showspeed = Showspeed()
@@ -292,6 +298,7 @@ def enter():
     SPEED = global_state.x_acceleration * 30
     boy.acceleration = global_state.y_accelertaion * 30
     localmoney = 0
+    rocket = global_state.rockets
 
 
 def exit():
@@ -335,7 +342,7 @@ def draw(frame_time):
 
 
 def handle_events(frame_time):
-    global localmoney, global_state
+    global localmoney, global_state, rocket
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -345,8 +352,9 @@ def handle_events(frame_time):
             print(global_state.totalmoney)
             game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            if Boy.state == NORMALSTATE:
+            if Boy.state == NORMALSTATE and rocket >= 1:
                 boy.acceleration = -1500
+                rocket -= 1
             elif Boy.state == HELISTATE:
                 Helicopter.timer = 0.0
                 Boy.state = NORMALSTATE
