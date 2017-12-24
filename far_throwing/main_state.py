@@ -30,6 +30,8 @@ rocket = 0
 class Boy():
     state = NORMALSTATE
     font = None
+    oversound = None
+    enemysound = None
     def __init__(self):
         self.x, self.y = 0, 100
         self.rotate = 0
@@ -40,6 +42,15 @@ class Boy():
         self.acceleration = 0.0
         if Boy.font == None:
             Boy.font = load_font('Font/ENCR10B.TTF', 50)
+        self.bgm = load_music('Music/bgm.mp3')
+        self.bgm.set_volume(64)
+        self.bgm.repeat_play()
+        if Boy.enemysound == None:
+            Boy.enemysound = load_wav('Music/jump.wav')
+            Boy.enemysound.set_volume(64)
+        if Boy.oversound == None:
+            Boy.oversound = load_wav('Music/die.wav')
+            Boy.oversound.set_volume(64)
 
     def update(self, frame_time):
         global SPEED, floor_enemy_speed, is_game_over, NORMALSTATE, HELISTATE, GRAVITIY, localmoney
@@ -54,7 +65,10 @@ class Boy():
                 if Boy.state == NORMALSTATE and self.acceleration < 0:
                     self.acceleration = - 3 * self.acceleration / 4
                     SPEED = 3 * SPEED / 4
-                    if SPEED < 166: is_game_over = 1
+                    if SPEED < 166:
+                        is_game_over = 1
+                        self.bgm.set_volume(0)
+                        Boy.oversound.play()
             for floor_en in floor_enemy:
                 if collide(floor_en, boy):
                     if Boy.state == NORMALSTATE and self.acceleration < 0:
@@ -62,6 +76,7 @@ class Boy():
                         floor_en.x = 1100
                         SPEED = 5 * SPEED / 6
                         localmoney += 10
+                        Boy.enemysound.play()
 
         elif Boy.state == HELISTATE:
             if collide(boy, ground):
@@ -123,6 +138,7 @@ class Background():
     def __init__(self):
         self.x, self.y  = 0, 400
         self.image = load_image('Resource/noon.png')
+
 
     def update(self, frame_time):
         self.x -= SPEED * frame_time

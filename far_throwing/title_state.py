@@ -9,16 +9,21 @@ name = "StartState"
 image = None
 font = None
 logo_time = 0.0
+bgm = None
 
 
 def enter():
-    global image, font
+    global image, font, bgm
     image = load_image('Resource/title.png')
     font = load_font('Font/ENCR10B.TTF', 60)
+    bgm = load_wav('Music/title.wav')
+    bgm.set_volume(60)
+    bgm.play()
 
 def exit():
-    global image
+    global image, bgm
     del(image)
+    del(bgm)
 
 def update(frame_time):
     global logo_time

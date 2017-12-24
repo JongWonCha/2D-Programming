@@ -3,7 +3,7 @@ from pico2d import *
 import title_state
 import main_state
 import global_state
-
+import random
 
 name = "StartState"
 background = None
@@ -13,6 +13,7 @@ power = 0
 MAX_POWER = 100.0
 MIN_POWER = 2.0
 DELTA = 200.0
+font = None
 
 
 class Boy:
@@ -23,6 +24,9 @@ class Boy:
         self.y_acceleration = 0.0
         self.acceleration_dir = 0
         self.image = load_image('Resource/hero_animation.png')
+        self.bgm = load_music('Music/fire.mp3')
+        self.bgm.set_volume(64)
+        self.bgm.repeat_play()
 
     def update(self, frame_time):
         global power, MAX_POWER, MIN_POWER, DELTA
@@ -77,10 +81,11 @@ class Background():
         self.image.clip_draw(0, 0, 2133, 800, self.x + 2133 / 2, self.y)
 
 def enter():
-    global background, boy, gauge
+    global background, boy, gauge, font
     boy = Boy()
     background = Background()
     gauge = Gauge()
+    font = load_font('Font/ENCR10B.TTF', 50)
 
 
 def exit():
@@ -100,6 +105,7 @@ def draw(frame_time):
     background.draw()
     gauge.draw()
     boy.draw()
+    font.draw(300, 350, 'press space', (random.randint(0, 254), random.randint(0, 254), random.randint(0, 254)))
     update_canvas()
 
 
@@ -110,7 +116,7 @@ def handle_events(frame_time):
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             power += 1
             if power == 2:

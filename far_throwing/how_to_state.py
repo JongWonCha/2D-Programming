@@ -4,16 +4,23 @@ from pico2d import *
 name = "StartState"
 image = None
 font = None
+bgm = None
 
 
 def enter():
-    global image, font
+    global image, font, bgm
     image = load_image('Resource/how_to_play.png')
     font = load_font('Font/ENCR10B.TTF', 50)
+    bgm = load_music('Music/store.mp3')
+    bgm.set_volume(64)
+    bgm.repeat_play()
+
 
 def exit():
-    global image
+    global image, font, bgm
     del(image)
+    del(font)
+    del(bgm)
 
 def update(frame_time):
     pass

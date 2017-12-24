@@ -6,15 +6,23 @@ name = "StartState"
 image = None
 font = None
 speed = 0
+bgm = None
 
 
 def enter():
-    global image,font
+    global image,font, bgm
     image = load_image('Resource/store.png')
     font = load_font('Font/ENCR10B.TTF', 50)
+    bgm = load_music('Music/store.mp3')
+    bgm.set_volume(50)
+    bgm.repeat_play()
+
+
 def exit():
-    global image
+    global image, bgm, font
     del(image)
+    del(font)
+    del(bgm)
 
 def update(frame_time):
     global speed
@@ -25,9 +33,9 @@ def draw(frame_time):
     clear_canvas()
     image.clip_draw(0, 0, 1600, 900, 500, 400, 1000, 800)
     font.draw(300, 700, 'you have $%d' % global_state.totalmoney, (0, 0, 0))
-    font.draw(80, 400, 'highspeed : %d'%speed, (0, 0, 0))
+    font.draw(10, 400, 'highest speed: %d'%speed, (0, 0, 0))
     font.draw(80, 450, '$50', (0, 0, 0))
-    font.draw(80, 350, 'press 1 to buy', (0, 0, 0))
+    font.draw(30, 350, 'press 1 to buy', (0, 0, 0))
     font.draw(550, 400, 'rocket : %d' %global_state.rockets , (0, 0, 0))
     font.draw(550, 450, '$100', (0, 0, 0))
     font.draw(550, 350, 'press 2 to buy', (0, 0, 0))
