@@ -23,11 +23,12 @@ boy_max_height = 600
 boy_xposition = 140
 floor_enemy_speed = 1
 is_game_over = 0
+localmoney = 0
 
 
 class Boy():
     state = NORMALSTATE
-
+    font = None
     def __init__(self):
         self.x, self.y = 0, 100
         self.rotate = 0
@@ -36,9 +37,11 @@ class Boy():
         self.heli_image = load_image('Resource/helicopter.png')
         self.over_image = load_image('Resource/game_over.png')
         self.acceleration = 0.0
+        if Boy.font == None:
+            Boy.font = load_font('Font/ENCR10B.TTF', 80)
 
     def update(self, frame_time):
-        global SPEED, floor_enemy_speed, is_game_over, NORMALSTATE, HELISTATE, GRAVITIY
+        global SPEED, floor_enemy_speed, is_game_over, NORMALSTATE, HELISTATE, GRAVITIY, localmoney
         self.x += SPEED * frame_time
         if Boy.state == NORMALSTATE:
             self.y += self.acceleration * frame_time
@@ -57,6 +60,7 @@ class Boy():
                         self.acceleration = -self.acceleration
                         floor_en.x = 1100
                         SPEED = 5 * SPEED / 6
+                        localmoney += 10
 
         elif Boy.state == HELISTATE:
             if collide(boy, ground):
@@ -67,7 +71,6 @@ class Boy():
             if Helicopter.timer < 0.0:
                 self.y += self.acceleration * frame_time
                 self.acceleration -= GRAVITIY * frame_time
-                print(self.acceleration, self.y)
 
         if collide(boy, helicopter) and Boy.state == NORMALSTATE:
             Boy.state = HELISTATE
@@ -75,10 +78,10 @@ class Boy():
             Helicopter.timer = 2.0
             self.acceleration = 0
 
-        print(Boy.state)
 
 
     def draw(self):
+        global localmoney
         if Boy.state == NORMALSTATE:
             if self.y < boy_max_height:
                 self.hero_image.clip_draw(int(self.frame) * 108, boy_xposition, 108, boy_xposition, boy_xposition, self.y)
@@ -90,6 +93,8 @@ class Boy():
             else: self.heli_image.draw(boy_xposition, boy_max_height)
         if is_game_over:
             self.over_image.draw(500, 400)
+        Boy.font.draw(300, 750, 'money : %d'%localmoney, (0, 0, 0))
+
 
 
     def get_bb(self):
@@ -204,7 +209,6 @@ class Helicopter():
             self.y = self.realy - (boy.y - boy_max_height)
         if Boy.state == HELISTATE:
             Helicopter.timer -= frame_time
-            print(Helicopter.timer)
 
     def draw(self):
         self.image.clip_draw(0, 0, 250, 250, self.x, self.y)
@@ -250,7 +254,7 @@ class Bomb():
         draw_rectangle(*self.get_bb())
 
     def update(self, frame_time):
-        global SPEED
+        global SPEED, high_speed
         if is_game_over == 0:
             self.x -= (SPEED - self.speed) * frame_time
             if self.x < -200: self.x = 1500
@@ -261,7 +265,7 @@ class Bomb():
                 self.y = 215 - (boy.y - boy_max_height)
             if collide(boy, bomb) and boy.acceleration < 0 and Boy.state == NORMALSTATE:
                 SPEED += 1000
-                if SPEED > 3000: SPEED = 3000
+                if SPEED > high_speed: SPEED = high_speed
                 boy.acceleration = - 5 * boy.acceleration / 4
 
 
@@ -272,7 +276,7 @@ class Bomb():
 
 
 def enter():
-    global boy, front_background, back_background, SPEED, sky, floor_enemy, ground, helicopter, showspeed,is_game_over, bomb
+    global boy, front_background, back_background, SPEED,localmoney, sky, floor_enemy, ground, helicopter, showspeed,is_game_over, bomb
     boy = Boy()
     bomb = Bomb()
     showspeed = Showspeed()
@@ -287,6 +291,7 @@ def enter():
     is_game_over = 0
     SPEED = global_state.x_acceleration * 30
     boy.acceleration = global_state.y_accelertaion * 30
+    localmoney = 0
 
 
 def exit():
@@ -330,11 +335,14 @@ def draw(frame_time):
 
 
 def handle_events(frame_time):
+    global localmoney, global_state
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            global_state.totalmoney += localmoney
+            print(global_state.totalmoney)
             game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             if Boy.state == NORMALSTATE:
