@@ -52,11 +52,11 @@ def handle_events(frame_time):
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_1:
-            if global_state.totalmoney > 50 and global_state.high_speed < 3300:
-                global_state.high_speed += 33
+            if global_state.totalmoney >= 50 and global_state.high_speed < 3300:
+                global_state.high_speed += 35
                 global_state.totalmoney -= 50
         elif event.type == SDL_KEYDOWN and event.key == SDLK_2:
-            if global_state.totalmoney > 100:
+            if global_state.totalmoney >= 100:
                 global_state.rockets += 1
                 global_state.totalmoney -= 100
 

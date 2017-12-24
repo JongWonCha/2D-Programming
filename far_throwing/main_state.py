@@ -2,7 +2,6 @@ import game_framework
 from pico2d import *
 import fire_state
 import global_state
-from class_file import *
 import title_state
 import random
 
@@ -287,7 +286,7 @@ class Bomb():
                 self.y = 215 - (boy.y - boy_max_height)
             if collide(boy, bomb) and boy.acceleration < 0 and Boy.state == NORMALSTATE:
                 SPEED += 1000
-                if SPEED > high_speed: SPEED = high_speed
+                if SPEED > global_state.high_speed: SPEED = global_state.high_speed
                 boy.acceleration = - 5 * boy.acceleration / 4
 
 
@@ -365,7 +364,6 @@ def handle_events(frame_time):
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             global_state.totalmoney += localmoney
-            print(global_state.totalmoney)
             game_framework.change_state(title_state)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             if Boy.state == NORMALSTATE and rocket >= 1:

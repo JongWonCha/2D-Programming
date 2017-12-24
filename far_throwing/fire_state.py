@@ -66,7 +66,6 @@ class Gauge:
         draw_rectangle(self.y_power_xpos, self.y_power_ypos, self.y_power_xpos+ 30, self.y_power_ypos + 400)
         self.image.clip_draw(0, 0, 30, 30, self.x_power_xpos +((400.0 / MAX_POWER) * boy.x_acceleration / 2), self.x_power_ypos + 15,(400.0 / MAX_POWER) * boy.x_acceleration, 30 )
         self.image.clip_draw(0, 0, 30, 30, self.y_power_xpos + 15, self.y_power_ypos + ((400.0 / MAX_POWER) * boy.y_acceleration / 2),30, (400.0 / MAX_POWER) * boy.y_acceleration )
-        print(boy.x_acceleration)
 
 
 

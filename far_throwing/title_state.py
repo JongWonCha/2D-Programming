@@ -38,7 +38,6 @@ def draw(frame_time):
     font.draw(20, 150, 'press enter to start', (0, 0, 0))
     font.draw(20, 100, 'press space to how to play', (0, 0, 0))
     font.draw(20, 50, 'press s to store', (0, 0, 0))
-    print(global_state.totalmoney)
     update_canvas()
 
 
